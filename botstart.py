@@ -8,6 +8,7 @@ import json
 group_token = ''
 group_id = 192176246
 lastBotMsgID = 0
+lastBotMsgText = ''
 
 
 def write_msg(session, session_event, text):
@@ -21,14 +22,16 @@ def write_msg(session, session_event, text):
 
 
 def edit_msg(session, session_event, msg_id):
-    last_msg = session.messages.getById(message_ids=lastBotMsgID)
-    print(last_msg)
-    edit_text = send_request(last_msg['items'][0]['text'])
-    session.messages.edit(
-        peer_id=session_event.obj['peer_id'],
-        message=edit_text,
-        message_id=msg_id
-    )
+    edit_text = send_request(lastBotMsgText)
+    try:
+        session.messages.edit(
+            peer_id=session_event.obj['peer_id'],
+            message=edit_text,
+            message_id=msg_id
+        )
+    except Exception as ee:
+        print(ee)
+        write_msg(edit_text)
 
 
 def send_request(text):
@@ -55,11 +58,12 @@ while True:
                 msg_text = event.obj['text']
                 if msg_text.find('Прф, ') == 0 or msg_text.find('прф, ') == 0:
                     send_text = msg_text[5:]
-                    lastBotMsgID = write_msg(vkK, event, send_request(send_text))
+                    lastBotMsgText = send_request(send_text)
+                    lastBotMsgID = write_msg(vkK, event, lastBotMsgText)
                     print(lastBotMsgID)
                 elif msg_text.find('Прф дальше') == 0 or msg_text.find('прф дальше') == 0:
                     print('Continue')
                     edit_msg(vkK, event, lastBotMsgID)
 
     except Exception as e:
-        print(e.__class__)
+        print(e)
