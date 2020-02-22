@@ -16,8 +16,8 @@ def write_msg(session, session_event, text):
         random_id=session_event.obj['random_id'],
         message=text
     )
-    print(bot_msg)
-    return bot_msg
+    print(bot_msg['message_id'])
+    return bot_msg['message_id']
 
 
 def edit_msg(session, session_event, msg_id):
