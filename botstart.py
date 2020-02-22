@@ -31,7 +31,7 @@ def edit_msg(session, session_event, msg_id):
         )
     except Exception as ee:
         print(ee)
-        write_msg(edit_text)
+        write_msg(session, session_event, edit_text)
 
 
 def send_request(text):
