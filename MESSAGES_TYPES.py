@@ -2,7 +2,7 @@
 
 import API
 
-MSG_GENERATE = [u'Прф, ', u'прф, ', u'прф,', u'Прф,', u'P ', u'p ', u'P, ', u'p, ', u'p,', u'P,']
+MSG_GENERATE = [u'Прф, ', u'прф, ', u'прф,', u'Прф,', u'P, ', u'p, ', u'p,', u'P,']
 MSG_NEXT_GENERATE = [u'Прф дальше', u'прф дальше', u'p n', u'P n', u'P N']
 
 
