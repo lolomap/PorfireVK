@@ -2,8 +2,9 @@
 
 import API
 
-MSG_GENERATE = [u'Прф, ', u'прф, ', u'прф,', u'Прф,', u'P, ', u'p, ', u'p,', u'P,']
-MSG_NEXT_GENERATE = [u'Прф дальше', u'прф дальше', u'p n', u'P n', u'P N']
+MSG_GENERATE = [u'прф, ', u'прф,', u'p, ', u'p,']
+MSG_NEXT_GENERATE = [u'прф дальше', u'p n']
+MSG_CHANGE = [u'прф другое', 'p ch']
 
 
 def easter_egg_request(session, session_event):

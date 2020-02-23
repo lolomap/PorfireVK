@@ -2,6 +2,20 @@
 
 import requests
 import json
+import MESSAGES_TYPES
+
+
+def msg_process(msg_text):
+    for msg in MESSAGES_TYPES.MSG_GENERATE:
+        if msg_text.lower().find(msg) == 0:
+            return {'type': 'MSG_GENERATE', 'command': msg}
+    for msg in MESSAGES_TYPES.MSG_NEXT_GENERATE:
+        if msg_text.lower().find(msg) == 0:
+            return {'type': 'MSG_NEXT_GENERATE'}
+    for msg in MESSAGES_TYPES.MSG_CHANGE:
+        if msg_text.lower().find(msg) == 0:
+            return {'type': 'MSG_CHANGE'}
+    return 'Message'
 
 
 def write_msg(session, session_event, text, sticker_id=None):
