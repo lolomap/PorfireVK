@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import API
 
 MSG_GENERATE = ['Прф, ', 'прф, ', 'прф,', 'Прф,', 'P ', 'p ', 'P, ', 'p, ', 'p,', 'P,']
