@@ -18,18 +18,35 @@ def msg_process(msg_text):
     return {'type': 'Message'}
 
 
-def write_msg(session, session_event, text, sticker_id=None):
-    if sticker_id is None:
+def write_msg(session, session_event, text, sticker_id=None, picture=None):
+    bot_msg = None
+    if text and picture is None:
         bot_msg = session.messages.send(
             peer_id=session_event.obj['peer_id'],
             random_id=session_event.obj['random_id'],
             message=text
         )
-    else:
+    if sticker_id is not None:
         bot_msg = session.messages.send(
             peer_id=session_event.obj['peer_id'],
             random_id=session_event.obj['random_id'],
             sticker_id=sticker_id
+        )
+    if picture is not None:
+        photo_file = session.photos.getMessagesUploadServer(
+            peer_id=session_event.obj['peer_id'])
+        r_data = {'photo': open('images/pitivo.jpg', 'rb')}
+        photo_data = requests.post(photo_file['upload_url'], files=r_data).json()
+        print(photo_data)
+        photo = session.photos.saveMessagesPhoto(server=photo_data['server'],
+                                                 photo=photo_data['photo'],
+                                                 hash=photo_data['hash'])[0]
+        print('PHOTO UPLOADED')
+        bot_msg = session.messages.send(
+            peer_id=session_event.obj['peer_id'],
+            random_id=session_event.obj['random_id'],
+            message=text,
+            attachment='photo{0}_{1}'.format(photo['owner_id'], photo['id'])
         )
     print(bot_msg)
     return bot_msg
