@@ -15,7 +15,7 @@ def msg_process(msg_text):
     for msg in MESSAGES_TYPES.MSG_CHANGE:
         if msg_text.lower().find(msg) == 0:
             return {'type': 'MSG_CHANGE'}
-    return 'Message'
+    return {'type': 'Message'}
 
 
 def write_msg(session, session_event, text, sticker_id=None):
