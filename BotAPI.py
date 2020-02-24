@@ -82,7 +82,7 @@ def get_activity(event):
     msg = ''
     print(act_list)
     for user in act_list.keys():
-        msg = msg+'{0}   {1}\n'.format(user, act_list[user])
+        msg = msg + user + '   ' + act_list[user]
     API.write_msg(event, msg)
 
 
