@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 group_token = None
 group_id = None
 close_pass = None
