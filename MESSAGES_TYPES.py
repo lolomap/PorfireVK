@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 MSG_GENERATE = [u'прф, ', u'прф,', u'p, ', u'p,']
