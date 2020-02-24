@@ -1,74 +1,54 @@
 # -*- coding: utf-8 -*-
-import random
-import vk_api
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import sys
 
-import API
-import MESSAGES_TYPES
+from Bot import BotData
+from Bot import BotAPI
 
-group_token = sys.argv[1]
-group_id = sys.argv[2]
-close_pass = sys.argv[3]
+BotData.group_token = sys.argv[1]
+BotData.group_id = sys.argv[2]
+BotData.close_pass = sys.argv[3]
 
-lastBotMsgID = 0
-
-lastBotMsg = {}
-lastBotMsgText = ''
-saveBotMsg = {}
-
-lastCmdType = ''
-
+wiped = False
 
 while True:
     try:
-        vk_session = vk_api.VkApi(token=group_token)
-        longpoll = VkBotLongPoll(vk_session, group_id)
-        vkK = vk_session.get_api()
-        print('STARTED')
+        BotAPI.connect_vk()
+        print('Connected')
 
         msg_text = ''
         send_text = ''
-        for event in longpoll.listen():
-            if event.type == VkBotEventType.MESSAGE_NEW:
-                msg_text = event.obj['text']
+        for event in BotData.longpoll.listen():
+            if BotAPI.check_event_type(event, 'MESSAGE_NEW'):
+                event_info = BotAPI.get_event_info(event)
+                msg_text = event_info['text']
+                user = event_info['user']
+                peer_id = event_info['peer']
 
-                if msg_text == close_pass:
-                    API.write_msg(vkK, event, "CLOSING...")
-                    exit('Closed by user')
+                try:
+                    if not wiped:
+                        BotAPI.wipe_conversation_activity(peer_id)
+                        wiped = True
 
-                if msg_text.lower() == u'прф, другое' or msg_text.lower() == u'прф, дальше' \
-                        or msg_text.lower() == 'p, n' or msg_text.lower() == 'p, ch':
-                    API.write_msg(vkK, event, u'Иди нахрен, пиши нормально')
-                    continue
+                    BotAPI.user_add_msg_count(user, peer_id)
+                except:
+                    pass
 
-                MESSAGES_TYPES.easter_egg_request(vkK, event)
+                if msg_text == BotData.close_pass:
+                    BotAPI.stop_bot(event)
 
-                process_res = API.msg_process(msg_text)
+                BotAPI.easter_egg_request(event)
+
+                process_res = BotAPI.msg_process(msg_text)
 
                 if process_res['type'] == 'MSG_GENERATE':
-                    send_text = msg_text[len(process_res['command']):]
-                    API.save_last_msg(event, send_text, saveBotMsg)
-
-                    lastBotMsgText = API.send_request(send_text)
-
-                    API.save_last_msg(event, lastBotMsgText, lastBotMsg)
-
-                    lastBotMsgID = API.write_msg(vkK, event, lastBotMsgText)
-                    lastCmdType = process_res['type']
+                    BotAPI.generate(msg_text, process_res['command'], event)
                 elif process_res['type'] == 'MSG_NEXT_GENERATE':
-                    print('Continue')
-                    API.save_last_msg(event, lastBotMsgText, saveBotMsg)
-                    lastBotMsgText = API.edit_msg(vkK, event, lastBotMsgID, lastBotMsg)
-                    API.save_last_msg(event, lastBotMsgText, lastBotMsg)
-                    lastCmdType = process_res['type']
+                    BotAPI.next_generate(event)
                 elif process_res['type'] == 'MSG_CHANGE':
-                    lastBotMsgText = API.edit_msg(vkK, event, lastBotMsgID, saveBotMsg)
-                    API.save_last_msg(event, lastBotMsgText, lastBotMsg)
-                    lastCmdType = process_res['type']
+                    BotAPI.next_generate(event)
+                elif process_res['type'] == 'MSG_GET_ACTION':
+                    break
                 else:
-                    rand_generate = random.randint(1, 100)
-                    if rand_generate <= 10:
-                        API.write_msg(vkK, event, API.send_request(msg_text))
+                    BotAPI.witless_generate(msg_text, event)
     except Exception as e:
         print(e)

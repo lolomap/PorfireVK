@@ -2,45 +2,59 @@
 
 import requests
 import json
-import MESSAGES_TYPES
+from Bot import BotData
+
+import vk_api
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 
 
-def msg_process(msg_text):
-    for msg in MESSAGES_TYPES.MSG_GENERATE:
-        if msg_text.lower().find(msg) == 0:
-            return {'type': 'MSG_GENERATE', 'command': msg}
-    for msg in MESSAGES_TYPES.MSG_NEXT_GENERATE:
-        if msg_text.lower().find(msg) == 0:
-            return {'type': 'MSG_NEXT_GENERATE'}
-    for msg in MESSAGES_TYPES.MSG_CHANGE:
-        if msg_text.lower().find(msg) == 0:
-            return {'type': 'MSG_CHANGE'}
-    return {'type': 'Message'}
+def create_session():
+    api = vk_api.VkApi(token=BotData.group_token)
+    longpoll = VkBotLongPoll(api, BotData.group_id)
+    session = api.get_api()
+    return {'session': session, 'longpoll': longpoll}
 
 
-def write_msg(session, session_event, text, sticker_id=None, picture=None):
+def get_user(user_id):
+    return BotData.session.users.get(user_id)
+
+
+def get_conversation(peer_id):
+    return BotData.session.messages.getConversationsById(peer_id)['items']
+
+
+def get_conversation_members(peer_id):
+    return BotData.session.messages.getConversationMembers(peer_id)['profiles']
+
+
+def get_event_type(event):
+    if event.type == VkBotEventType.MESSAGE_NEW:
+        return 'MESSAGE_NEW'
+
+
+def write_msg(session_event, text, sticker_id=None, picture=None):
     bot_msg = None
     if text and picture is None:
-        bot_msg = session.messages.send(
+        bot_msg = BotData.session.messages.send(
             peer_id=session_event.obj['peer_id'],
             random_id=session_event.obj['random_id'],
             message=text
         )
     if sticker_id is not None:
-        bot_msg = session.messages.send(
+        bot_msg = BotData.session.messages.send(
             peer_id=session_event.obj['peer_id'],
             random_id=session_event.obj['random_id'],
             sticker_id=sticker_id
         )
     if picture is not None:
-        photo_file = session.photos.getMessagesUploadServer(
+        photo_file = BotData.session.photos.getMessagesUploadServer(
             peer_id=session_event.obj['peer_id'])
         r_data = {'photo': open('images/pitivo.jpg', 'rb')}
         photo_data = requests.post(photo_file['upload_url'], files=r_data).json()
-        photo = session.photos.saveMessagesPhoto(server=photo_data['server'],
-                                                 photo=photo_data['photo'],
-                                                 hash=photo_data['hash'])[0]
-        bot_msg = session.messages.send(
+        photo = BotData.session.photos.saveMessagesPhoto(server=photo_data['server'],
+                                                         photo=photo_data['photo'],
+                                                         hash=photo_data['hash'])[0]
+        bot_msg = BotData.session.messages.send(
             peer_id=session_event.obj['peer_id'],
             random_id=session_event.obj['random_id'],
             message=text,
@@ -49,18 +63,18 @@ def write_msg(session, session_event, text, sticker_id=None, picture=None):
     return bot_msg
 
 
-def edit_msg(session, session_event, msg_id, last_msg):
+def edit_msg(session_event, msg_id, last_msg):
     last_msg_text = last_msg[session_event.obj['peer_id']]
     edit_text = send_request(last_msg_text)
     try:
-        session.messages.edit(
+        BotData.session.messages.edit(
             peer_id=session_event.obj['peer_id'],
             message=edit_text,
             message_id=msg_id
         )
     except Exception as ee:
         print(ee)
-        write_msg(session, session_event, edit_text)
+        write_msg(BotData.session, session_event, edit_text)
     return edit_text
 
 
