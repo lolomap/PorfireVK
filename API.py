@@ -9,25 +9,29 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 
 
 def create_session():
+    print(BotData.group_token, BotData.group_id)
     api = vk_api.VkApi(token=BotData.group_token)
     longpoll = VkBotLongPoll(api, BotData.group_id)
     session = api.get_api()
+    print('session created')
     return {'session': session, 'longpoll': longpoll}
 
 
 def get_user(user_id):
-    return BotData.session.users.get(user_id)
+    print('ug')
+    return BotData.session.users.get(user_ids=user_id)
 
 
 def get_conversation(peer_id):
-    return BotData.session.messages.getConversationsById(peer_id)['items']
+    return BotData.session.messages.getConversationsById(peer_id=peer_id)['items']
 
 
 def get_conversation_members(peer_id):
-    return BotData.session.messages.getConversationMembers(peer_id)['profiles']
+    return BotData.session.messages.getConversationMembers(peer_id=peer_id)['profiles']
 
 
 def get_event_type(event):
+    print('etg')
     if event.type == VkBotEventType.MESSAGE_NEW:
         return 'MESSAGE_NEW'
 
@@ -74,7 +78,7 @@ def edit_msg(session_event, msg_id, last_msg):
         )
     except Exception as ee:
         print(ee)
-        write_msg(BotData.session, session_event, edit_text)
+        write_msg(session_event, edit_text)
     return edit_text
 
 

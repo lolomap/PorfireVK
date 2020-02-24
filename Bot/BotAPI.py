@@ -11,6 +11,7 @@ def connect_vk():
 
 
 def get_event_info(event):
+    print('in')
     info = {'type': API.get_event_type(event),
             'user': API.get_user(event.obj['from_id'])[0],
             'peer': event.obj['peer_id'],
@@ -73,10 +74,12 @@ def change(event):
 
 
 def get_activity(event):
+    print(BotData.conversation_statistics)
     act_list = BotData.conversation_statistics[event.obj['peer_id']]['message_count']
     msg = ''
+    print(act_list)
     for user in act_list.keys():
-        msg = msg+'{0} {1]   {2}\n'.format(user['first_name'], user['last_name'], act_list[user])
+        msg = msg+'{0}   {1}\n'.format(user, act_list[user])
     API.write_msg(event, msg)
 
 
@@ -101,14 +104,16 @@ def easter_egg_request(session_event):
 
 def wipe_conversation_activity(peer_id):
     user_list = API.get_conversation_members(peer_id)
+    print(user_list)
     for user in user_list:
-        BotData.conversation_statistic['message_count'] = {user: 0}
+        BotData.conversation_statistic['message_count'] = {user['last_name']+' '+user['first_name']: 0}
+    print(BotData.conversation_statistic)
     BotData.conversation_statistics[peer_id] = BotData.conversation_statistic
 
 
 def user_add_msg_count(user, peer_id):
-    count = BotData.conversation_statistic['message_count'][user]
-    BotData.conversation_statistic['message_count'][user] = count + 1
+    count = BotData.conversation_statistic['message_count'][user['last_name']+' '+user['first_name']]
+    BotData.conversation_statistic['message_count'][user['last_name']+' '+user['first_name']] = count + 1
     BotData.conversation_statistics[peer_id] = BotData.conversation_statistic
 
 
