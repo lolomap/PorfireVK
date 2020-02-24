@@ -1,7 +1,7 @@
 import API
 import random
-from Bot import BotData
-from Bot import MESSAGES_TYPES
+import BotData
+import MESSAGES_TYPES
 
 
 def connect_vk():
@@ -106,14 +106,14 @@ def wipe_conversation_activity(peer_id):
     user_list = API.get_conversation_members(peer_id)
     print(user_list)
     for user in user_list:
-        BotData.conversation_statistic['message_count'] = {user['last_name']+' '+user['first_name']: 0}
+        BotData.conversation_statistic['message_count'] = {user['last_name'] + ' ' + user['first_name']: 0}
     print(BotData.conversation_statistic)
     BotData.conversation_statistics[peer_id] = BotData.conversation_statistic
 
 
 def user_add_msg_count(user, peer_id):
-    count = BotData.conversation_statistic['message_count'][user['last_name']+' '+user['first_name']]
-    BotData.conversation_statistic['message_count'][user['last_name']+' '+user['first_name']] = count + 1
+    count = BotData.conversation_statistic['message_count'][user['last_name'] + ' ' + user['first_name']]
+    BotData.conversation_statistic['message_count'][user['last_name'] + ' ' + user['first_name']] = count + 1
     BotData.conversation_statistics[peer_id] = BotData.conversation_statistic
 
 

@@ -2,7 +2,7 @@
 
 import requests
 import json
-from Bot import BotData
+import BotData
 
 import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType

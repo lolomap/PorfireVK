@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from Bot import BotData
-from Bot import BotAPI
+import BotData
+import BotAPI
 
 BotData.group_token = sys.argv[1]
 BotData.group_id = sys.argv[2]
