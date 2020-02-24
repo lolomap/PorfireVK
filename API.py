@@ -37,18 +37,15 @@ def write_msg(session, session_event, text, sticker_id=None, picture=None):
             peer_id=session_event.obj['peer_id'])
         r_data = {'photo': open('images/pitivo.jpg', 'rb')}
         photo_data = requests.post(photo_file['upload_url'], files=r_data).json()
-        print(photo_data)
         photo = session.photos.saveMessagesPhoto(server=photo_data['server'],
                                                  photo=photo_data['photo'],
                                                  hash=photo_data['hash'])[0]
-        print('PHOTO UPLOADED')
         bot_msg = session.messages.send(
             peer_id=session_event.obj['peer_id'],
             random_id=session_event.obj['random_id'],
             message=text,
             attachment='photo{0}_{1}'.format(photo['owner_id'], photo['id'])
         )
-    print(bot_msg)
     return bot_msg
 
 
@@ -73,7 +70,6 @@ def send_request(text):
     payload = {'prompt': text, 'length': 30, 'num_samples': 4}
     res = requests.post(url, data=json.dumps(payload), headers=header)
     sub_res = res.json()['replies'][2]
-    print(sub_res)
     return text+sub_res
 
 
