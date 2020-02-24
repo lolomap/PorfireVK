@@ -37,9 +37,9 @@ while True:
                     API.write_msg(vkK, event, "CLOSING...")
                     exit('Closed by user')
 
-                if msg_text.lower() == 'прф, другое' or msg_text.lower() == 'прф, дальше' or msg_text.lower() == 'p, n'\
+                if msg_text.lower() == u'прф, другое' or msg_text.lower() == u'прф, дальше' or msg_text.lower() == 'p, n'\
                         or msg_text.lower() == 'p, ch':
-                    API.write_msg(vkK, event, 'Иди нахрен, пиши нормально')
+                    API.write_msg(vkK, event, u'Иди нахрен, пиши нормально')
 
                 MESSAGES_TYPES.easter_egg_request(vkK, event)
 
