@@ -9,13 +9,13 @@ BotData.group_token = sys.argv[1]
 BotData.group_id = sys.argv[2]
 BotData.close_pass = sys.argv[3]
 
-BotAPI.connect_vk()
-print('Connected')
-try:
-    BotAPI.wipe_conversation_activity()
-    print('wiped')
-except Exception as ex:
-    print(ex)
+# BotAPI.connect_vk()
+# print('Connected')
+# try:
+#   BotAPI.wipe_conversation_activity()
+#   print('wiped')
+# except Exception as ex:
+#   print(ex)
 
 while True:
     try:
@@ -39,10 +39,10 @@ while True:
                 if msg_text == BotData.close_pass:
                     BotAPI.stop_bot(event)
 
-                print(BotData.peer_list.count(peer_id))
-                if BotData.peer_list.count(peer_id) == 0:
-                    BotAPI.wipe_conversation_activity()
-                    BotData.peer_list.append(peer_id)
+                # print(BotData.peer_list.count(peer_id))
+                # if BotData.peer_list.count(peer_id) == 0:
+                #    BotAPI.wipe_conversation_activity()
+                #   BotData.peer_list.append(peer_id)
 
                 BotAPI.easter_egg_request(event)
                 print('easter checked')
