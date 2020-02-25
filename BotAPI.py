@@ -47,11 +47,11 @@ def msg_process(msg_text):
 
 def generate(msg_text, command, event):
     send_text = msg_text[len(command):]
-    API.save_last_msg(event, send_text, BotData.saveBotMsg)
+    BotData.saveBotMsg[event.obj['peer_id']] = send_text
 
     BotData.lastBotMsgText = API.send_request(send_text)
 
-    API.save_last_msg(event, BotData.lastBotMsgText, BotData.lastBotMsg)
+    BotData.lastBotMsg[event.obj['peer_id']] = BotData.lastBotMsgText
 
     BotData.lastBotMsgID = API.write_msg(event, BotData.lastBotMsgText)
     BotData.lastCmdType = 'MSG_GENERATE'
@@ -64,15 +64,15 @@ def witless_generate(msg_text, event):
 
 
 def next_generate(event):
-    API.save_last_msg(event, BotData.lastBotMsgText, BotData.saveBotMsg)
+    BotData.saveBotMsg[event.obj['peer_id']] = BotData.lastBotMsgText
     BotData.lastBotMsgText = API.edit_msg(event, BotData.lastBotMsgID, BotData.lastBotMsg)
-    API.save_last_msg(event, BotData.lastBotMsgText, BotData.lastBotMsg)
+    BotData.lastBotMsg[event.obj['peer_id']] = BotData.lastBotMsgText
     BotData.lastCmdType = 'MSG_NEXT_GENERATE'
 
 
 def change(event):
     BotData.lastBotMsgText = API.edit_msg(event, BotData.lastBotMsgID, BotData.saveBotMsg)
-    API.save_last_msg(event, BotData.lastBotMsgText, BotData.lastBotMsg)
+    BotData.lastBotMsg[event.obj['peer_id']] = BotData.lastBotMsgText
     BotData.lastCmdType = 'MSG_CHANGE'
 
 
