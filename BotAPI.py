@@ -77,13 +77,15 @@ def change(event):
 
 
 def get_activity(event):
+    print('get_activity()')
     print(BotData.conversation_statistics)
     act_list = BotData.conversation_statistics[event.obj['peer_id']]['message_count']
     msg = ''
     print(act_list)
     for user in act_list.keys():
-        msg = msg + user + '   ' + act_list[user]
+        msg = msg + user + '   ' + str(act_list[user])
     API.write_msg(event, msg)
+    BotData.lastCmdType = 'MSG_GET_ACTION'
 
 
 def easter_egg_request(session_event):
@@ -105,19 +107,26 @@ def easter_egg_request(session_event):
             API.write_msg(session_event, '', sticker_id=163)
 
 
-def wipe_conversation_activity(peer_id):
-    user_list = API.get_conversation_members(peer_id)
-    print(user_list)
-    for user in user_list:
-        BotData.conversation_statistic['message_count'] = {user['last_name'] + ' ' + user['first_name']: 0}
-    print(BotData.conversation_statistic)
-    BotData.conversation_statistics[peer_id] = BotData.conversation_statistic
+def wipe_conversation_activity():
+    conversations = API.get_conversations()
+    print(conversations)
+    for conversation in conversations:
+        user_list = API.get_conversation_members(conversation['conversation']['peer']['id'])
+        print(user_list)
+        for user in user_list:
+            BotData.conversation_statistic['message_count'] = {user['last_name'] + ' ' + user['first_name']: 0}
+        print(BotData.conversation_statistic)
+        BotData.conversation_statistics[conversation['conversation']['peer']['id']] = BotData.conversation_statistic
+        print(BotData.conversation_statistics[conversation['conversation']['peer']['id']])
 
 
 def user_add_msg_count(user, peer_id):
+    print(BotData.conversation_statistics[peer_id])
     count = BotData.conversation_statistic['message_count'][user['last_name'] + ' ' + user['first_name']]
+    print(BotData.conversation_statistic)
     BotData.conversation_statistic['message_count'][user['last_name'] + ' ' + user['first_name']] = count + 1
     BotData.conversation_statistics[peer_id] = BotData.conversation_statistic
+    print(BotData.conversation_statistics[peer_id])
 
 
 def stop_bot(event):

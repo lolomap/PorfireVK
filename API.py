@@ -31,6 +31,10 @@ def get_conversation_members(peer_id):
     return BotData.session.messages.getConversationMembers(peer_id=peer_id)['profiles']
 
 
+def get_conversations():
+    return BotData.session.messages.getConversations()['items']
+
+
 def get_event_type(event):
     print('etg')
     if event.type == VkBotEventType.MESSAGE_NEW:
@@ -89,7 +93,7 @@ def send_request(text):
     payload = {'prompt': text, 'length': 30, 'num_samples': 4}
     res = requests.post(url, data=json.dumps(payload), headers=header)
     sub_res = res.json()['replies'][2]
-    return text+sub_res
+    return text+sub_res.replace('<br>', '\n')
 
 
 def save_last_msg(session_event, text, dictionary):

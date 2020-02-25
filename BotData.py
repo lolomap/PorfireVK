@@ -17,3 +17,5 @@ lastCmdType = ''
 
 conversation_statistics = {}
 conversation_statistic = {'message_count': {}}
+
+peer_list = []
