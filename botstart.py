@@ -57,9 +57,9 @@ while True:
                 elif process_res['type'] == 'MSG_GET_ACTION':
                     print('NOW')
                     # BotAPI.get_activity(event)
-                else:
-                    BotAPI.witless_generate(msg_text, event)
-                    print('add count')
-                    BotAPI.user_add_msg_count(user, peer_id)
+                # else:
+                    # BotAPI.witless_generate(msg_text, event)
+                    # print('add count')
+                    # BotAPI.user_add_msg_count(user, peer_id)
     except Exception as e:
         print(e)
